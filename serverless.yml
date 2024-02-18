@@ -1,0 +1,44 @@
+service: rimac-swapi
+
+useDotenv: true
+
+frameworkVersion: "3"
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  environment:
+    DB_HOST: ${env:DB_HOST}
+    DB_PORT: ${env:DB_PORT}
+    DB_USERNAME: ${env:DB_USERNAME}
+    DB_PASSWORD: ${env:DB_PASSWORD}
+    DB_DATABASE: ${env:DB_DATABASE}
+    SWAPI_API: ${env:SWAPI_API}
+
+functions:
+
+  myAPI-createPlanet:
+    handler: src/handlers/planets.create
+    events:
+      - http:
+          path: my-api/planets
+          method: post
+
+  myAPI-getPlanet:
+    handler: src/handlers/planets.get
+    events:
+      - http:
+          path: my-api/planets/{id}
+          method: get
+
+  swapi-getPlanet:
+    handler: src/handlers/planets.getFromSwapi
+    events:
+      - http:
+          path: swapi/planets/{id}
+          method: get
